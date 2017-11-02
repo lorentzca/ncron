@@ -10,19 +10,19 @@ import (
 )
 
 func getCrontab(stdin *bufio.Scanner) []string {
-	var crontab []string
+	var c []string
 	for stdin.Scan() {
-		crontab = append(crontab, stdin.Text())
+		c = append(c, stdin.Text())
 	}
-	return crontab
+	return c
 }
 
 func getNextTime(crontab []string) []time.Time {
-	var nextTime []time.Time
+	var n []time.Time
 	for _, v := range crontab {
-		nextTime = append(nextTime, cronexpr.MustParse(v).Next(time.Now()))
+		n = append(n, cronexpr.MustParse(v).Next(time.Now()))
 	}
-	return nextTime
+	return n
 }
 
 func main() {
