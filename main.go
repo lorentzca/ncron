@@ -10,10 +10,16 @@ import (
 	"github.com/gorhill/cronexpr"
 )
 
-var d string
+var (
+	y int
+	m int
+	d int
+)
 
 func register() {
-	flag.StringVar(&d, "d", "2017, 11, 06, 0, 0, 0, 0, time.Local", "Specify date")
+	flag.IntVar(&y, "y", 1989, "Specify Year")
+	flag.IntVar(&m, "m", 7, "Specify Month")
+	flag.IntVar(&d, "d", 3, "Specify Day")
 	flag.Parse()
 }
 
@@ -34,13 +40,27 @@ func getNextTime(crontab []string) []time.Time {
 	return n
 }
 
+func getNextTimeSpecifiedDate(crontab []string) []time.Time {
+	var n []time.Time
+
+	for _, v := range crontab {
+		n = append(n, cronexpr.MustParse(v).Next(time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.Local)))
+	}
+	return n
+}
+
 func main() {
 	register()
 	stdin := bufio.NewScanner(os.Stdin)
 	crontab := getCrontab(stdin)
-	nextTime := getNextTime(crontab)
 
+	nextTime := getNextTime(crontab)
 	for _, v := range nextTime {
+		fmt.Println(v)
+	}
+
+	nextTimeSpecified := getNextTimeSpecifiedDate(crontab)
+	for _, v := range nextTimeSpecified {
 		fmt.Println(v)
 	}
 }
