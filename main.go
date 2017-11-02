@@ -15,12 +15,14 @@ var (
 	y int
 	m int
 	d int
+	j bool
 )
 
 func register() {
 	flag.IntVar(&y, "y", 1989, "Specify Year")
 	flag.IntVar(&m, "m", 7, "Specify Month")
 	flag.IntVar(&d, "d", 3, "Specify Day")
+	flag.BoolVar(&j, "j", false, "Show Job")
 	flag.Parse()
 }
 
@@ -38,8 +40,8 @@ func crontabMap(s []string) map[string]string {
 
 	for _, v := range s {
 		t := strings.Join(strings.Split(v, " ")[0:5], " ")
-		j := strings.Join(strings.Split(v, " ")[5:], " ")
-		m[t] = j
+		cj := strings.Join(strings.Split(v, " ")[5:], " ")
+		m[t] = cj
 	}
 	return m
 }
@@ -62,7 +64,14 @@ func main() {
 
 	nextTimeSpecified := getNextTimeSpecifiedDate(cMap)
 
-	for k, v := range nextTimeSpecified {
-		fmt.Println(k, v)
+	if j {
+		for k, v := range nextTimeSpecified {
+			fmt.Println(k, v)
+		}
+	} else {
+		for k, _ := range nextTimeSpecified {
+			fmt.Println(k)
+		}
 	}
+
 }
