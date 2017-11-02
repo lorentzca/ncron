@@ -31,15 +31,6 @@ func getCrontab(stdin *bufio.Scanner) []string {
 	return c
 }
 
-func getNextTime(crontab []string) []time.Time {
-	var n []time.Time
-
-	for _, v := range crontab {
-		n = append(n, cronexpr.MustParse(v).Next(time.Now()))
-	}
-	return n
-}
-
 func getNextTimeSpecifiedDate(crontab []string) []time.Time {
 	var n []time.Time
 
@@ -53,11 +44,6 @@ func main() {
 	register()
 	stdin := bufio.NewScanner(os.Stdin)
 	crontab := getCrontab(stdin)
-
-	nextTime := getNextTime(crontab)
-	for _, v := range nextTime {
-		fmt.Println(v)
-	}
 
 	nextTimeSpecified := getNextTimeSpecifiedDate(crontab)
 	for _, v := range nextTimeSpecified {
