@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gorhill/cronexpr"
@@ -23,19 +24,31 @@ func register() {
 	flag.Parse()
 }
 
-func getCrontab(stdin *bufio.Scanner) []string {
-	var c []string
+func cStdin(stdin *bufio.Scanner) []string {
+	var s []string
+
 	for stdin.Scan() {
-		c = append(c, stdin.Text())
+		s = append(s, stdin.Text())
 	}
-	return c
+	return s
 }
 
-func getNextTimeSpecifiedDate(crontab []string) []time.Time {
+func crontabMap(s []string) map[string]string {
+	m := map[string]string{}
+
+	for _, v := range s {
+		t := strings.Join(strings.Split(v, " ")[0:5], " ")
+		j := strings.Join(strings.Split(v, " ")[5:], " ")
+		m[t] = j
+	}
+	return m
+}
+
+func getNextTimeSpecifiedDate(crontabMap map[string]string) []time.Time {
 	var n []time.Time
 
-	for _, v := range crontab {
-		n = append(n, cronexpr.MustParse(v).Next(time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.Local)))
+	for k, _ := range crontabMap {
+		n = append(n, cronexpr.MustParse(k).Next(time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.Local)))
 	}
 	return n
 }
@@ -43,9 +56,11 @@ func getNextTimeSpecifiedDate(crontab []string) []time.Time {
 func main() {
 	register()
 	stdin := bufio.NewScanner(os.Stdin)
-	crontab := getCrontab(stdin)
+	stdinSlice := cStdin(stdin)
+	cMap := crontabMap(stdinSlice)
 
-	nextTimeSpecified := getNextTimeSpecifiedDate(crontab)
+	nextTimeSpecified := getNextTimeSpecifiedDate(cMap)
+
 	for _, v := range nextTimeSpecified {
 		fmt.Println(v)
 	}
