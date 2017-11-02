@@ -44,11 +44,12 @@ func crontabMap(s []string) map[string]string {
 	return m
 }
 
-func getNextTimeSpecifiedDate(crontabMap map[string]string) []time.Time {
-	var n []time.Time
+func getNextTimeSpecifiedDate(crontabMap map[string]string) map[time.Time]string {
+	n := map[time.Time]string{}
 
-	for k, _ := range crontabMap {
-		n = append(n, cronexpr.MustParse(k).Next(time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.Local)))
+	for k, v := range crontabMap {
+		t := cronexpr.MustParse(k).Next(time.Date(y, time.Month(m), d, 0, 0, 0, 0, time.Local))
+		n[t] = v
 	}
 	return n
 }
@@ -61,7 +62,7 @@ func main() {
 
 	nextTimeSpecified := getNextTimeSpecifiedDate(cMap)
 
-	for _, v := range nextTimeSpecified {
-		fmt.Println(v)
+	for k, v := range nextTimeSpecified {
+		fmt.Println(k, v)
 	}
 }
