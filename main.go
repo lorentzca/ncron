@@ -20,10 +20,10 @@ var (
 )
 
 func register() {
-	flag.IntVar(&y, "y", 1989, "Specify Year")
-	flag.IntVar(&m, "m", 7, "Specify Month")
-	flag.IntVar(&d, "d", 3, "Specify Day")
-	flag.IntVar(&h, "h", 16, "Specify Hour")
+	flag.IntVar(&y, "y", time.Now().Year(), "Specify Year")
+	flag.IntVar(&m, "m", int(time.Now().Month()), "Specify Month")
+	flag.IntVar(&d, "d", time.Now().Day(), "Specify Day")
+	flag.IntVar(&h, "h", time.Now().Hour(), "Specify Hour")
 	flag.BoolVar(&j, "j", false, "Show Job")
 	flag.Parse()
 }
