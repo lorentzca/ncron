@@ -12,18 +12,20 @@ import (
 )
 
 var (
-	y int
-	m int
-	d int
-	h int
-	j bool
+	y   int
+	mon int
+	d   int
+	h   int
+	min int
+	j   bool
 )
 
 func register() {
 	flag.IntVar(&y, "y", time.Now().Year(), "Specify Year")
-	flag.IntVar(&m, "m", int(time.Now().Month()), "Specify Month")
+	flag.IntVar(&mon, "mon", int(time.Now().Month()), "Specify Month")
 	flag.IntVar(&d, "d", time.Now().Day(), "Specify Day")
 	flag.IntVar(&h, "h", time.Now().Hour(), "Specify Hour")
+	flag.IntVar(&min, "min", time.Now().Minute(), "Specify Minute")
 	flag.BoolVar(&j, "j", false, "Show Job")
 	flag.Parse()
 }
@@ -52,7 +54,7 @@ func getNextTimeSpecifiedDate(crontabMap map[string]string) map[time.Time]string
 	n := map[time.Time]string{}
 
 	for k, v := range crontabMap {
-		t := cronexpr.MustParse(k).Next(time.Date(y, time.Month(m), d, h, 0, 0, 0, time.Local))
+		t := cronexpr.MustParse(k).Next(time.Date(y, time.Month(mon), d, h, min, 0, 0, time.Local))
 		n[t] = v
 	}
 	return n
